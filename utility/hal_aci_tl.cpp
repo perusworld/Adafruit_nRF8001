@@ -179,16 +179,6 @@ static bool m_aci_q_is_full(aci_queue_t *aci_q)
 
 void m_print_aci_data(hal_aci_data_t *p_data)
 {
-  const uint8_t length = p_data->buffer[0];
-  uint8_t i;
-  Serial.print(length, DEC);
-  Serial.print(" :");
-  for (i=0; i<=length; i++)
-  {
-    Serial.print(p_data->buffer[i], HEX);
-    Serial.print(F(", "));
-  }
-  Serial.println(F(""));
 }
 
 void toggle_eimsk(bool state)
@@ -254,7 +244,6 @@ bool hal_aci_tl_event_get(hal_aci_data_t *p_aci_data)
   {
     if (true == aci_debug_print)
     {
-      Serial.print(" E");
       m_print_aci_data(p_aci_data);
     }
     
@@ -335,7 +324,6 @@ bool hal_aci_tl_send(hal_aci_data_t *p_aci_cmd)
 
   if (true == aci_debug_print)
   {
-    Serial.print("C");
     m_print_aci_data(p_aci_cmd);
   }
   

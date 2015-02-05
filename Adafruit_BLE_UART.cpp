@@ -74,21 +74,10 @@ void Adafruit_BLE_UART::defaultRX(uint8_t *buffer, uint8_t len)
     if (new_head != adafruit_ble_rx_tail) {
       adafruit_ble_rx_buffer[adafruit_ble_rx_head] = buffer[i];
 
-      // debug echo print
-      // Serial.print((char)buffer[i]); 
-
       adafruit_ble_rx_head = new_head;
     }
   }
 
-  /*
-  Serial.print("Buffer: ");
-  for(int i=0; i<adafruit_ble_rx_head; i++)
-    {
-      Serial.print(" 0x"); Serial.print((char)adafruit_ble_rx_buffer[i], HEX); 
-    }
-  Serial.println();
-  */
 }
 
 
@@ -237,11 +226,6 @@ size_t Adafruit_BLE_UART::write(uint8_t * buffer, uint8_t len)
   uint8_t bytesThisPass, sent = 0;
 
 #ifdef BLE_RW_DEBUG
-  Serial.print(F("\tWriting out to BTLE:"));
-  for (uint8_t i=0; i<len; i++) {
-    Serial.print(F(" 0x")); Serial.print(buffer[i], HEX);
-  }
-  Serial.println();
 #endif
 
   while(len) { // Parcelize into chunks
@@ -271,7 +255,6 @@ size_t Adafruit_BLE_UART::write(uint8_t * buffer, uint8_t len)
 size_t Adafruit_BLE_UART::write(uint8_t buffer)
 {
 #ifdef BLE_RW_DEBUG
-  Serial.print(F("\tWriting one byte 0x")); Serial.println(buffer, HEX);
 #endif
   if (lib_aci_is_pipe_available(&aci_state, PIPE_UART_OVER_BTLE_UART_TX_TX))
   {
@@ -332,7 +315,6 @@ void Adafruit_BLE_UART::pollACI()
             if (ACI_STATUS_TRANSACTION_COMPLETE != do_aci_setup(&aci_state))
             {
               if (debugMode) {
-                Serial.println(F("Error in ACI Setup"));
               }
             }
             break;
@@ -361,9 +343,6 @@ void Adafruit_BLE_UART::pollACI()
           // TRANSACTION_CONTINUE and TRANSACTION_COMPLETE
           // all other ACI commands will have status code of ACI_STATUS_SUCCESS for a successful command
           if (debugMode) {
-            Serial.print(F("ACI Command "));
-            Serial.println(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
-            Serial.println(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
           }
           while (1);
         }
@@ -425,10 +404,6 @@ void Adafruit_BLE_UART::pollACI()
       case ACI_EVT_PIPE_ERROR:
         /* See the appendix in the nRF8001 Product Specication for details on the error codes */
         if (debugMode) {
-          Serial.print(F("ACI Evt Pipe Error: Pipe #:"));
-          Serial.print(aci_evt->params.pipe_error.pipe_number, DEC);
-          Serial.print(F("  Pipe Error Code: 0x"));
-          Serial.println(aci_evt->params.pipe_error.error_code, HEX);
         }
 
         /* Increment the credit available as the data packet was not sent */
@@ -438,10 +413,6 @@ void Adafruit_BLE_UART::pollACI()
   }
   else
   {
-    // Serial.println(F("No ACI Events available"));
-    // No event in the ACI Event queue and if there is no event in the ACI command queue the arduino can go to sleep
-    // Arduino can go to sleep now
-    // Wakeup from sleep from the RDYN line
   }
 }
 

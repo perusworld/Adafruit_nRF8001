@@ -51,14 +51,11 @@ aci_status_code_t aci_setup(aci_state_t *aci_stat, uint8_t num_cmds, uint8_t num
     //Put the Setup ACI message in the command queue
     if (!hal_aci_tl_send(&aci_cmd))
     {
-      Serial.println(F("Cmd Queue Full"));
       return ACI_STATUS_ERROR_INTERNAL;
     }
     else
     {
         //Debug messages:
-        //Serial.print(F("Setup msg"));
-        //Serial.println(i, DEC);
         #ifdef __arm__
         // This entire setup scheme may have an off-by-one error, where it tries to
         // put 8 commends into the queue which can only hold 7 due to the way the
@@ -96,8 +93,6 @@ aci_status_code_t aci_setup(aci_state_t *aci_stat, uint8_t num_cmds, uint8_t num
       }
       else
       {
-        //Serial.print(F("Cmd Response Evt "));
-        //Serial.println(evt_count);
       }
       
       if (num_cmds == evt_count)
@@ -124,9 +119,6 @@ aci_status_code_t do_aci_setup(aci_state_t *aci_stat)
   {
     for(i=0; i<(aci_stat->aci_setup_info.num_setup_msgs/ACI_QUEUE_SIZE); i++)
     {
-      //Serial.print(ACI_QUEUE_SIZE, DEC);
-      //Serial.print(F(" "));
-      //Serial.println(0+(ACI_QUEUE_SIZE*i), DEC);
       status = aci_setup(aci_stat, ACI_QUEUE_SIZE, (ACI_QUEUE_SIZE*i));
     }
     if ((aci_stat->aci_setup_info.num_setup_msgs % ACI_QUEUE_SIZE) != 0)
